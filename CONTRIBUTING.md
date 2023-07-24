@@ -9,7 +9,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/Bossillas/repid-explainer/issues.
+Report bugs at https://github.com/REPIDpython/repid-explainer/issues.
 
 If you are reporting a bug, please include:
 

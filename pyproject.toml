@@ -2,9 +2,9 @@
 [tool.poetry]
 name = "repid-explainer"
 version = "0.1.0"
-homepage = "https://github.com/Bossillas/repid-explainer"
+homepage = "https://github.com/REPIDpython/repid-explainer"
 description = "REPID: Regional Effect Plots with implicit Interaction Detection."
-authors = ["Bannasorn Paspanthong <bannasornpp@gmail.com>"]
+authors = ["Bannasorn Paspanthong <bannasornpp@gmail.com>", "Hye Won Hwang <HyeHwang2023@u.northwestern.edu>"]
 readme = "README.md"
 license =  "MIT"
 classifiers=[

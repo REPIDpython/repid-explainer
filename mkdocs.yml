@@ -1,7 +1,7 @@
 site_name: repid-explainer
-site_url: https://Bossillas.github.io/repid-explainer
-repo_url: https://github.com/Bossillas/repid-explainer
-repo_name: Bossillas/repid-explainer
+site_url: https://REPIDpython.github.io/repid-explainer
+repo_url: https://github.com/REPIDpython/repid-explainer
+repo_name: REPIDpython/repid-explainer
 #strict: true
 nav:
   - Home: index.md
@@ -63,7 +63,7 @@ extra:
       link: https://github.com/waynerv/cookiecutter-pypackage
       name: Facebook
     - icon: fontawesome/brands/github
-      link: https://github.com/Bossillas/repid-explainer
+      link: https://github.com/REPIDpython/repid-explainer
       name: Github
     - icon: material/email
       link: "mailto:bannasornpp@gmail.com"
