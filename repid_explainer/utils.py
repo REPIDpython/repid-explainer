@@ -23,7 +23,14 @@ def generate_ice(
                                       and each column corresponds to each grid value
             - grid_values (np.array): grid values for the selected feature on ICE curve
     """
+    # get ice curve object from sklearn
     ice_data = partial_dependence(model, X, feature, kind="individual")
+    
+    # get actual ice curves and its x values
     grid_values = ice_data["grid_values"]
     ice_curve = ice_data["individual"][0]
+    
+    # mean centered ice cruves
+    ice_curve = ice_curve - np.mean(ice_curve, axis=1, keepdims=True)
+    
     return (ice_curve, grid_values)
