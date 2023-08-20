@@ -4,6 +4,43 @@ from typing import Tuple
 import pandas as pd
 import numpy as np
 
+def generate_split_candidates_numeric(
+    data: np.ndarray,
+    n_quantiles: int = None,
+    min_node_size: int = 10
+) -> np.ndarray:
+    """Generate array of possible splitting points that other functions will try (for numerical data)
+
+    Args:
+        data (np.ndarray): Array of numerical data
+        n_quantiles (int, optional): Number of quantiles users want to split data into. Defaults to None.
+        min_node_size (int, optional): After splitting, each child node must have at least min_node_size in itself. Defaults to 10.
+
+    Returns:
+        np.ndarray: Possible splitting points to perform split on
+    """
+    
+    # Check if all values are numeric
+    all_numeric = np.all(np.array([np.issubdtype(x, np.number) for x in data]))
+    if not all_numeric:
+        raise ValueError("Input data must array of be float on int.")
+    
+    data.sort()
+    
+    # indices to split data that have min_node_size in each chuck (not guaranteed)
+    idx = np.array(range(min_node_size, len(data) - min_node_size, min_node_size))
+    
+    split_point = data[idx]
+    
+    if isinstance(n_quantiles, type(None)):
+        split_point = np.unique(split_point)
+    else:
+        # speed up the computation by choosing quantiles of the split_point
+        qprobs = np.linspace(0, 1, num=n_quantiles+1)
+        split_point = np.unique(np.percentile(split_point, qprobs * 100))
+
+    return split_point
+
 def generate_ice(
     model: BaseEstimator,
     X: pd.DataFrame,
