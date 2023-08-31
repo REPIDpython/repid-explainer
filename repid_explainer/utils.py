@@ -18,6 +18,32 @@ def SS_L2(ice_curve: np.ndarray) -> float:
     sqr_diff = np.sum((ice_curve - y_pred)**2)
     return sqr_diff
 
+def find_best_split(
+    feature: np.ndarray,
+    ice_curve: np.ndarray,
+    min_node_size: int,
+    objective: callable
+) -> tuple:
+    """Given the selected feature and ice curve, find the best split (lowest objective value)
+
+    Args:
+        feature (np.ndarray): feature that is being splitted on
+        ice_curve (np.ndarray): collection of the current ice curves
+        min_node_size (int):  minimum size of each node after splitting
+        objective (callable): function to calcuate objective value
+
+    Returns:
+        tuple: two elements 1). the best split point 2). the best objective value
+    """
+    # TODO: add option for categorical data
+    candidates = generate_split_candidates_numeric(feature, n_quantiles=100, min_node_size=min_node_size)
+    perform_split_vectorize = np.vectorize(perform_split)
+    new_obj = perform_split_vectorize(candidates, feature, ice_curve, min_node_size, objective)
+    
+    # get split that has the minimum objective value
+    min_ind = np.argmin(new_obj)
+    return (candidates[min_ind], new_obj[min_ind])
+
 def right_of_split(
     split_point: float,
     feature: np.ndarray
