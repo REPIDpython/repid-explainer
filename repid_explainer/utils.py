@@ -4,6 +4,68 @@ from typing import Tuple
 import pandas as pd
 import numpy as np
 
+
+def SS_L2(ice_curve: np.ndarray) -> float:
+    """calculate sum of L2 residual
+
+    Args:
+        ice_curve (np.ndarray): group of ice curves to calcualte total L2 loss
+
+    Returns:
+        float: total L2 lost
+    """
+    y_pred = np.mean(ice_curve, axis=0)
+    sqr_diff = np.sum((ice_curve - y_pred)**2)
+    return sqr_diff
+
+def right_of_split(
+    split_point: float,
+    feature: np.ndarray
+) -> np.ndarray:
+    """Determine which index of data point is the right side of the splitting point
+
+    Args:
+        split_point (float): splitting point
+        feature (np.ndarray): feature that is being splitted on
+
+    Returns:
+        np.ndarray: array of boolean (true for right side)
+    """
+    return np.array([(val > split_point) for val in feature])
+
+
+def perform_split(
+    split_point: float,
+    feature: np.ndarray,
+    ice_curve: np.ndarray,
+    min_node_size: int,
+    objective: callable
+) -> float:
+    """Perform split on the selected point to check the new objective value
+
+    Args:
+        split_point (float): splitting point we wish to split
+        feature (np.ndarray): feature that is being splitted on
+        ice_curve (np.ndarray): collection of the current ice curves
+        min_node_size (int): minimum size of each node after splitting
+        objective (callable): function to calcuate objective value
+
+    Returns:
+        float: new total objective value after the split
+    """
+    right_side = right_of_split(split_point, feature)
+    
+    # ignore invalide split by giving them inf cost
+    if (sum(right_side) < min_node_size) or (sum(right_side) > len(feature) - min_node_size):
+        return np.inf
+    
+    ice_right = ice_curve[right_side]
+    ice_left = ice_curve[~right_side]
+    
+    # calcualte new objective value
+    return objective(ice_left) + objective(ice_right)
+    
+
 def generate_split_candidates_numeric(
     data: np.ndarray,
     n_quantiles: int = None,
