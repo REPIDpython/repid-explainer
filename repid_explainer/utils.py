@@ -12,7 +12,7 @@ def SS_L2(ice_curve: np.ndarray) -> float:
         ice_curve (np.ndarray): group of ice curves to calcualte total L2 loss
 
     Returns:
-        float: total L2 lost
+        float: total L2 loss
     """
     y_pred = np.mean(ice_curve, axis=0)
     sqr_diff = np.sum((ice_curve - y_pred)**2)
