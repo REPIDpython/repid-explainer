@@ -1,6 +1,6 @@
 from sklearn.inspection import partial_dependence
 from sklearn.base import BaseEstimator
-from typing import Tuple
+from typing import Tuple, Union
 import pandas as pd
 import numpy as np
 
@@ -18,22 +18,54 @@ def SS_L2(ice_curve: np.ndarray) -> float:
     sqr_diff = np.sum((ice_curve - y_pred)**2)
     return sqr_diff
 
+def split_node(
+    data: Union[np.ndarray, pd.DataFrame],
+    ice_curve: np.ndarray,
+    optimizer: callable,
+    min_node_size: int = 10
+) -> dict:
+    """_summary_
+
+    Args:
+        data (Union[np.ndarray, pd.DataFrame]): features that can be splitted on
+        ice_curve (np.ndarray): collection of the current ice curves
+        optimizer (callable): function to calcuate objective value
+        min_node_size (int, optional): minimum size of each node after splitting. Defaults to 10.
+
+    Returns:
+        dict: output index of the best column, the splitting value, new overall objective value of the split
+    """
+    # in case we receive pd.DataFrame
+    data = np.array(data)
+    
+    splits = np.apply_along_axis(find_best_split, 0, data, *[ice_curve, min_node_size, optimizer])
+    
+    # find minimum objective value
+    obj_vals = [split[1] for split in splits]
+    min_ind = obj_vals.index(min(obj_vals))
+    
+    return {
+        "column_index": min_ind,
+        "split_val": splits[min_ind][0],
+        "new_tot_obj": splits[min_ind][1]
+    }
+
 def find_best_split(
     feature: np.ndarray,
     ice_curve: np.ndarray,
     min_node_size: int,
     objective: callable
-) -> tuple:
+) -> Tuple:
     """Given the selected feature and ice curve, find the best split (lowest objective value)
 
     Args:
         feature (np.ndarray): feature that is being splitted on
         ice_curve (np.ndarray): collection of the current ice curves
-        min_node_size (int):  minimum size of each node after splitting
+        min_node_size (int): minimum size of each node after splitting
         objective (callable): function to calcuate objective value
 
     Returns:
-        tuple: two elements 1). the best split point 2). the best objective value
+        Tuple: two elements 1). the best split point 2). the best objective value
     """
     # TODO: add option for categorical data
     candidates = generate_split_candidates_numeric(feature, n_quantiles=100, min_node_size=min_node_size)
