@@ -39,7 +39,7 @@ class Node():
         objective: callable,
         gamma: float,
         min_split_size: int = 10
-    ):
+    ) -> None:
         
         if (len(self.subset_idx) < min_split_size) | self.improvement_met:
             self.stop_criteria_met = True

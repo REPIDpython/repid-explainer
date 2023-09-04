@@ -24,7 +24,7 @@ def split_node(
     optimizer: callable,
     min_node_size: int = 10
 ) -> dict:
-    """_summary_
+    """Compute the best split for the given ice curves
 
     Args:
         data (Union[np.ndarray, pd.DataFrame]): features that can be splitted on
