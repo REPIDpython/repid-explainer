@@ -1,4 +1,6 @@
-"""Main module."""
+import numpy as np
+import pandas as pd
+from utils import *
 
 class Node():
     
@@ -29,3 +31,42 @@ class Node():
         self.stop_criteria_met = stop_criteria_met
         self.improvement_met = improvement_met
         self.intImp = intImp
+        
+    def computesplit(
+        self, 
+        data: np.ndarray,
+        ice_curve: np.ndarray,
+        objective: callable,
+        gamma: float,
+        min_split_size: int = 10
+    ):
+        
+        if (len(self.subset_idx) < min_split_size) | self.improvement_met:
+            self.stop_criteria_met = True
+            return None
+        
+        self.obj_val_parent = objective(ice_curve)
+        self.obj_val = objective(ice_curve[self.subset_idx])
+        
+        # perform splitting
+        split = split_node(data[self.subset_idx],
+                           ice_curve,
+                           find_best_split,
+                           min_node_size=min_split_size)
+        
+        if isinstance(self.intImp, type(None)):
+            self.intImp = 0
+        
+        intImp = (self.obj_val - split["new_tot_obj"]) / self.obj_val_parent
+        
+        threshold = gamma if self.intImp == 0 else self.intImp * gamma
+        
+        if intImp < threshold:
+            self.improvement_met = True
+        else:
+            self.split_feature = split["column_index"]
+            self.split_val = split["split_val"]
+            self.intImp = intImp
+            self.obj_val_parent = self.obj_val
+            self.obj_val = split["new_tot_obj"]
+        
