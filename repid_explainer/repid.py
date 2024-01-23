@@ -41,11 +41,12 @@ class Node():
         min_split_size: int = 10
     ) -> None:
         
+        # check stop criteria
         if (len(self.subset_idx) < min_split_size) | self.improvement_met:
             self.stop_criteria_met = True
             return None
         
-        self.obj_val_parent = objective(ice_curve)
+        self.obj_val_parent = objective(ice_curve) # objective value of the root node
         self.obj_val = objective(ice_curve[self.subset_idx])
         
         # perform splitting
@@ -57,10 +58,11 @@ class Node():
         if isinstance(self.intImp, type(None)):
             self.intImp = 0
         
+        # calculate interaction importance and the threshold (stopping criteria)
         intImp = (self.obj_val - split["new_tot_obj"]) / self.obj_val_parent
-        
         threshold = gamma if self.intImp == 0 else self.intImp * gamma
         
+        # store split information if improvement is bigger than the threshold
         if intImp < threshold:
             self.improvement_met = True
         else:
@@ -70,3 +72,4 @@ class Node():
             self.obj_val_parent = self.obj_val
             self.obj_val = split["new_tot_obj"]
         
+        return None
