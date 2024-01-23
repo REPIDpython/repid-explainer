@@ -36,6 +36,15 @@ class Node():
         gamma: float,
         min_split_size: int = 10
     ) -> None:
+        """Compute the best split (if plausible) given the current node
+
+        Args:
+            data (Union[np.ndarray, pd.DataFrame]): features that can be splitted on (original features when training the model)
+            ice_curve (np.ndarray): collection of ice curves
+            objective (callable): function to calculate objective value
+            gamma (float): stopping criteria factor (split only if intImp(split_nodes) >= gamma * intImp(parent_node))
+            min_split_size (int, optional): minimum size of each node after splitting. Defaults to 10.
+        """
         
         # check stop criteria
         if (len(self.subset_idx) < min_split_size) | self.improvement_met:
@@ -74,6 +83,14 @@ class Node():
         self,
         data: Union[np.ndarray, pd.DataFrame]
     ) -> None:
+        """Store information for children node
+
+        Args:
+            data (Union[np.ndarray, pd.DataFrame]): features that can be splitted on (original features when training the model)
+
+        Raises:
+            ValueError: to add information on children, program must have splitted the node first
+        """
         
         # store None as children if the stopping criteria are met
         if self.improvement_met | self.stop_criteria_met:
