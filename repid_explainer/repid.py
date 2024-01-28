@@ -134,6 +134,10 @@ class Repid():
                  method: str = "nonsymmetric",
                  intImp: float = 0.1
                  ) -> None:
+        # check input validity
+        if method not in ["symmetric", "nonsymmetric"]:
+            raise ValueError("Argument 'method' must be either 'symmetric' or 'nonsymmetric'.")
+        
         self.depth = depth
         self.n_split = n_split
         self.method = method
@@ -153,4 +157,9 @@ class Repid():
                     subset_idx=np.arange(len(data)),
                     intImp=self.intImp)
         
-        
+        if self.method == "nonsymmetric":
+            pass
+        elif self.method == "symmetric":
+            pass
+        else:
+            raise ValueError("Argument 'method' must be either 'symmetric' or 'nonsymmetric'.")
