@@ -138,6 +138,24 @@ class Repid():
         if method not in ["symmetric", "nonsymmetric"]:
             raise ValueError("Argument 'method' must be either 'symmetric' or 'nonsymmetric'.")
         
+        if not isinstance(n_split, int):
+            raise ValueError("Argument 'n_split' must be a positive integer.")
+        
+        if not isinstance(depth, int):
+            raise ValueError("Argument 'depth' must be a positive integer.")
+        
+        if n_split < 1:
+            raise ValueError("Argument 'n_split' must be a positive integer.")
+        
+        if depth < 1:
+            raise ValueError("Argument 'depth' must be a positive integer.")
+        
+        if not isinstance(intImp, (int, float)):
+            raise ValueError("Argument 'intImp' must be a positive real number or zero.")
+        
+        if intImp < 0:
+            raise ValueError("Argument 'intImp' must be a positive real number or zero.")
+        
         self.depth = depth
         self.n_split = n_split
         self.method = method
