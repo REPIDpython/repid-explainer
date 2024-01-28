@@ -124,3 +124,33 @@ class Node():
                          "right": right_child}
         
         return None
+    
+    
+class Repid():
+    
+    def __init__(self,
+                 depth: int = 3,
+                 n_split: int = 5,
+                 method: str = "nonsymmetric",
+                 intImp: float = 0.1
+                 ) -> None:
+        self.depth = depth
+        self.n_split = n_split
+        self.method = method
+        self.intImp = intImp
+        
+    def fit(self,
+            model,
+            data: Union[np.ndarray, pd.DataFrame],
+            feature: Union[str, int],
+            categorical_features: list = None):
+        
+        # get ice_curve
+        ice_curve, grid_values = generate_ice(model, data, feature)
+        
+        # create root node
+        root = Node(depth=self.depth,
+                    subset_idx=np.arange(len(data)),
+                    intImp=self.intImp)
+        
+        
