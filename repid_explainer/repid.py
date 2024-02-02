@@ -105,26 +105,26 @@ class Node():
         # get index of left and right children
         ind_left = np.where(np.array(data)[:, self.split_feature] <= self.split_val)[0]
         ind_right = np.where(np.array(data)[:, self.split_feature] > self.split_val)[0]
-        
+
         # construct left and right children
         left_child = Node(depth=self.depth + 1,
-                          subset_idx=ind_left,
-                          child_type="left", 
-                          improvement_met=self.improvement_met,
-                          intImp=self.intImp,
-                          stop_criteria_met=self.stop_criteria_met)
+                        subset_idx=ind_left,
+                        child_type="left", 
+                        improvement_met=self.improvement_met,
+                        intImp=self.intImp,
+                        stop_criteria_met=self.stop_criteria_met)
         right_child = Node(depth=self.depth + 1,
-                          subset_idx=ind_right,
-                          child_type="right", 
-                          improvement_met=self.improvement_met,
-                          intImp=self.intImp,
-                          stop_criteria_met=self.stop_criteria_met)
+                        subset_idx=ind_right,
+                        child_type="right", 
+                        improvement_met=self.improvement_met,
+                        intImp=self.intImp,
+                        stop_criteria_met=self.stop_criteria_met)
         
         self.children = {"left": left_child,
-                         "right": right_child}
+                        "right": right_child}
         
         return None
-    
+   
     
 class Repid():
     
@@ -176,7 +176,9 @@ class Repid():
                     intImp=self.intImp)
         
         if self.method == "nonsymmetric":
-            pass
+            # use n_split for nonsymmetric method
+            for split in range(self.n_split):
+                pass
         elif self.method == "symmetric":
             pass
         else:

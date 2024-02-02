@@ -191,3 +191,7 @@ def generate_ice(
     ice_curve = ice_curve - np.mean(ice_curve, axis=1, keepdims=True)
     
     return (ice_curve, grid_values)
+
+def node_to_split(node, max_obj_node: dict):
+    if node.improvement_met | node.stop_criteria_met:
+        pass
