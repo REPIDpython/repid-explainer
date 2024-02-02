@@ -192,6 +192,52 @@ def generate_ice(
     
     return (ice_curve, grid_values)
 
-def node_to_split(node, max_obj_node: dict):
-    if node.improvement_met | node.stop_criteria_met:
-        pass
+def node_to_split(node, 
+                  max_obj_node: dict,
+                  ice_curve: np.ndarray,
+                  data: Union[np.ndarray, pd.DataFrame],
+                  objective: callable,
+                  gamma: float,
+                  min_split_size: int = 10
+) -> None:
+    """Recursive function to find a node with the best improvement in nonsymmetric tree
+
+    Args:
+        node (Node): a node in REPID's nonsymmetric tree structure
+        max_obj_node (dict): dictionary of current best node with the corresponding interaction importance (intTip)
+        ice_curve (np.ndarray): collection of all ice curves
+        data (Union[np.ndarray, pd.DataFrame]): features that can be splitted on (original features when training the model)
+        objective (callable): function to calculate objective value
+        gamma (float): stopping criteria factor (split only if intImp(split_nodes) >= gamma * intImp(parent_node))
+        min_split_size (int, optional): minimum size of each node after splitting. Defaults to 10.
+    """
+    if node is not None:
+        
+        # aggregate all conditions
+        condition = node.improvement_met \
+                    | node.stop_criteria_met \
+                    | (node.children["left"] is not None) \
+                    | (node.childten["right"] is not None)
+        
+        # consider only nodes with no children and both improvement_met and stop_criteria_met are false        
+        if not condition:
+            node.computeSplit(data, ice_curve, objective, gamma, min_split_size=min_split_size)
+            if node.intImp > max_obj_node["intImp"]:
+                max_obj_node["intImp"] = node.intImp
+                max_obj_node["node"] = node
+        
+        # recursively traverse the left and right children
+        node_to_split(node.children["left"],
+                      max_obj_node,
+                      ice_curve,
+                      data,
+                      objective,
+                      gamma,
+                      min_split_size=min_split_size)
+        node_to_split(node.children["right"],
+                      max_obj_node,
+                      ice_curve,
+                      data,
+                      objective,
+                      gamma,
+                      min_split_size=min_split_size)
