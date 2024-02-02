@@ -12,7 +12,7 @@ class Node():
                  child_type=None,
                  split_feature=None,
                  split_val=None,
-                 children=dict(),
+                 children={"left": None, "right": None},
                  stop_criteria_met=False,
                  improvement_met=False,
                  intImp=None):
@@ -92,10 +92,8 @@ class Node():
             ValueError: to add information on children, program must have splitted the node first
         """
         
-        # store None as children if the stopping criteria are met
+        # children remain as None if the stopping criteria are met
         if self.improvement_met | self.stop_criteria_met:
-            self.children = {"left": None, 
-                             "right": None}
             return None
         
         # must have splitting information to move forward
