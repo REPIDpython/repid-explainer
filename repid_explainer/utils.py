@@ -225,7 +225,8 @@ def node_to_split(node,
             if node.intImp > max_obj_node["intImp"]:
                 max_obj_node["intImp"] = node.intImp
                 max_obj_node["node"] = node
-        
+            node.revertSplit()
+            
         # recursively traverse the left and right children
         node_to_split(node.children["left"],
                       max_obj_node,

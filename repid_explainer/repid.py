@@ -79,6 +79,19 @@ class Node():
         
         return None
     
+    def revertSplit(self) -> None:
+        """
+        Revert any change made in the computeSplit method.
+        """
+        self.stop_criteria_met = False
+        self.improvement_met = False
+        self.split_feature = None
+        self.split_val = None
+        self.intImp = None
+        self.obj_val = None
+        self.obj_val_root = None
+        self.obj_val_parent = None
+    
     def computeChildren(
         self,
         data: Union[np.ndarray, pd.DataFrame]
@@ -163,6 +176,8 @@ class Repid():
             model,
             data: Union[np.ndarray, pd.DataFrame],
             feature: Union[str, int],
+            gamma: float = 0.1,
+            min_split_size: int = 10,
             categorical_features: list = None):
         
         # get ice_curve
@@ -176,7 +191,14 @@ class Repid():
         if self.method == "nonsymmetric":
             # use n_split for nonsymmetric method
             for split in range(self.n_split):
-                pass
+                max_obj_node = {"node": None, "intImp": -np.inf}
+                node_to_split(root,
+                              max_obj_node,
+                              ice_curve,
+                              data,
+                              SS_L2,
+                              gamma,
+                              min_split_size=min_split_size)
         elif self.method == "symmetric":
             pass
         else:
